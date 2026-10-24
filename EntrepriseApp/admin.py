@@ -15,6 +15,19 @@ class UtilisateurAdmin(admin.ModelAdmin):
     ordering=('-created_at',)
     date_hierarchy='created_at'
     list_per_page=1
+    readonly_fields = ('user_id', 'date_joined', 'last_login', 'created_at', 'updated_at')
+    fieldsets = (
+        ('Identité', {
+            'fields': ('user_id', 'username', 'email', 'telephone')
+        }),
+        ('Rôle et permissions', {
+            'fields': ('role', 'password', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
+        }),
+        ('Horodatage', {
+            'fields': ('date_joined', 'last_login', 'created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )
 
 #admin.site.register(Utilisateur,UtilisateurAdmin)
 class VehiculeInline(admin.TabularInline):
@@ -23,7 +36,14 @@ class VehiculeInline(admin.TabularInline):
     extra=1
 class EntrepriseAdmin(admin.ModelAdmin):
     inlines = [VehiculeInline]
-    list_display =('raison_social',)
+    list_display = ('raison_social', 'matricule_fiscal', 'type_entreprise', 'gerant', 'created_at')
+    list_filter = ('type_entreprise', 'created_at')
+    search_fields = ('raison_social', 'matricule_fiscal', 'gerant__username', 'gerant__email')
+    list_select_related = ('gerant',)
+    list_editable = ('type_entreprise',)
+    ordering = ('-created_at',)
+    date_hierarchy = 'created_at'
+    list_per_page = 25
     fieldsets = (
         ('Identité entreprise' , {
             'fields' :('raison_social','matricule_fiscal','type_entreprise')
