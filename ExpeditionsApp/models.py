@@ -7,7 +7,7 @@ class Expedition(models.Model):
     ville_depart=models.CharField(max_length=100)
     ville_arrive=models.CharField(max_length=100)
     date_souhaitee=models.DateField()
-    poids_kg=models.DecimalField(max_digits=10,decimal_places=10)
+    poids_kg=models.DecimalField(max_digits=300,decimal_places=3)
     description=models.TextField()
     statut=models.CharField(choices=[
         ( 'publiee','publiee'),
@@ -47,6 +47,6 @@ class Expedition(models.Model):
             raise ValidationError( f'limite de 99999 expéditions atteinte pour annee {annee}')
         return f"{prefixe}{c:05d}"
     def __str__(self):
-        return f"Expedition {self.reference} from {self.ville_depart} to {self.ville_arrivee}"
+        return f"Expedition {self.reference} from {self.ville_depart} to {self.ville_arrive}"
         
 

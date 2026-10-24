@@ -1,9 +1,13 @@
 from django.contrib import admin
 from .models import Utilisateur,Entreprise
 from django.contrib.auth.admin import UserAdmin
+from VehiculesApp.models import Vehicule
+admin.site.site_header ='TransConnect -Administration'
+admin.site.site_title='TransConnect'
+admin.site.index_title ='Tableau de bord'
 # Register your models here.
 @admin.register(Utilisateur)
-class UtilisateurAdmin(UserAdmin):
+class UtilisateurAdmin(admin.ModelAdmin):
     list_display=('user_id','username','role','first_name','last_name')
     list_filter=('user_id','created_at')
     search_fields=('telephone',)
@@ -13,8 +17,25 @@ class UtilisateurAdmin(UserAdmin):
     list_per_page=1
 
 #admin.site.register(Utilisateur,UtilisateurAdmin)
-
+class VehiculeInline(admin.TabularInline):
+    model= Vehicule
+    fields=('immatriculation','type_vehicule', 'capacite_kg')
+    extra=1
 class EntrepriseAdmin(admin.ModelAdmin):
-    pass
+    inlines = [VehiculeInline]
+    list_display =('raison_social',)
+    fieldsets = (
+        ('Identité entreprise' , {
+            'fields' :('raison_social','matricule_fiscal','type_entreprise')
+            
+        }),
+        ('Contact', {
+            'fields':('adresse','gerant'),
+        }), 
+        ('date systeme', {
+            'fields' :('created_at','updated_at')
+        })
+    )
+    readonly_fields=('created_at','updated_at')
 admin.site.register(Entreprise,EntrepriseAdmin)
 
